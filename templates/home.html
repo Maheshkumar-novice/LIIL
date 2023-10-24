@@ -56,16 +56,6 @@
         {% endfor %}
     </table>
 
-    <ol>
-    {% for link in links %}
-        <div class="link" style="display: flex; align-items: center; justify-content: left;">
-            <li id="{{link.id}}"><a href="{{link.link}}">{{link.link}}</a> [{{link.tag.upper()}}]</li>
-            <button type="button" style="margin-left: 30px;" class="delete">Delete</button>
-            <button type="button" style="margin-left: 30px;" class="discord">Post to Discord</button>
-        </div>
-    {% endfor %}
-    </ol>
-
     <script>
         document.querySelectorAll('button.delete').forEach((button) => {
             button.addEventListener('click', (e) => {
