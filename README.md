@@ -13,3 +13,5 @@ Project structure inspriations,
 
 * https://github.com/jerry-git/pytest-split?ref=blog.jerrycodes.com
 * https://github.com/samuelcolvin/aicli
+
+![example](example.png)
