@@ -16,7 +16,7 @@ Project structure inspriations,
 
 ![example](example.png)
 
-You can 3 actions on each of the stored links,
+You can do 3 actions on each of the stored links,
 * Delete
 * Discord - It'll send to the discord channel based on the selected tag
 * Copy - To clipboard
