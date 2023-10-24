@@ -7,16 +7,61 @@
 </head>
 <body>
     <form action="/" method="POST">
-        <input type="text" name="link" id="link">
-        <label for="link">Link</label>
-        <button type="submit">Submit</button>
+        <fieldset>
+            <legend>LIIL</legend>
+            <div>
+                <label for="link">Link:</label>
+                <br>
+                <input type="text" name="link" id="link" required style="width: 50%; height: 50px;">
+            </div>
+            <br>
+            <div>
+                <label for="tag">Channel Tag:</label>
+                <br>
+                <select name="tag" id="tag" required>
+                    {% for tag in tags %}
+                        <option value="{{tag}}">{{tag}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </fieldset>
     </form>
+
+    <table>
+        <tr>
+            <th>Link</th>
+            <th>Tag</th>
+            <th>Delete</th>
+            <th>Discord</th>
+            <th>Copy</th>
+        </tr>
+        {% for link in links %}
+            <tr id="{{link.id}}">
+                <td><a href="{{link.link}}">{{link.link}}</a></td>
+                <td>{{link.tag.upper()}}</td>
+                <td>
+                    <button type="button" class="delete">Delete</button>
+                </td>
+                <td>
+                    <button type="button" class="discord">Discord</button>
+                </td>
+                <td>
+                    <button type="button" class="copy">Copy</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 
     <ol>
     {% for link in links %}
-        <div class="link" style="display: flex;">
-            <li id="{{link.id}}"><a href="{{link.link}}">{{link.link}}</a></li>
+        <div class="link" style="display: flex; align-items: center; justify-content: left;">
+            <li id="{{link.id}}"><a href="{{link.link}}">{{link.link}}</a> [{{link.tag.upper()}}]</li>
             <button type="button" style="margin-left: 30px;" class="delete">Delete</button>
+            <button type="button" style="margin-left: 30px;" class="discord">Post to Discord</button>
         </div>
     {% endfor %}
     </ol>
@@ -24,9 +69,21 @@
     <script>
         document.querySelectorAll('button.delete').forEach((button) => {
             button.addEventListener('click', (e) => {
-                window.location = `/delete/${e.target.parentElement.children[0].id}`
+                window.location = `/delete/${e.target.closest('tr').id}`
             })
-        })
+        });
+
+        document.querySelectorAll('button.discord').forEach((button) => {
+            button.addEventListener('click', (e) => {
+                window.location = `/discord/${e.target.closest('tr').id}`
+            })
+        });
+
+        document.querySelectorAll('button.copy').forEach((button) => {
+            button.addEventListener('click', (e) => {
+                navigator.clipboard.writeText(e.target.closest('tr').children[0].children[0].href)
+            });
+        });
     </script>
 </body>
 </html>
