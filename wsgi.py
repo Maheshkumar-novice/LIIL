@@ -2,7 +2,6 @@ import os
 import traceback
 
 import requests
-from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from flask import Flask, Response, redirect, render_template, request, url_for
 from sqlalchemy import String, create_engine, select
@@ -69,24 +68,6 @@ def delete(id: int) -> Response:
 def discord(id: int) -> Response:
     with Session(engine) as session:
         link = session.get(LaterLink, id)
-
-        r = requests.get(url=link.link, timeout=10)
-
-        soup = BeautifulSoup(r.text, "html.parser")
-
-        og = {}
-
-        for i in soup.find_all("meta"):
-            if i.get("property") == "og:title":
-                og["title"] = i["content"]
-            elif i.get("property") == "og:description":
-                og["description"] = i["content"]
-            elif i.get("property") == "og:url":
-                og["url"] = i["content"]
-            elif i.get("property") == "og:type":
-                og["type"] = i["content"]
-            elif i.get("property") == "og:image":
-                og["thumbnail"] = {"url": i["content"], "width": 1200, "height": 600}
 
         channel_id = CHANNEL_IDS.get(link.tag)
         token = os.environ.get("DISCORD_TOKEN")
