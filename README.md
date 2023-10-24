@@ -15,3 +15,10 @@ Project structure inspriations,
 * https://github.com/samuelcolvin/aicli
 
 ![example](example.png)
+
+You can 3 actions on each of the stored links,
+* Delete
+* Discord - It'll send to the discord channel based on the selected tag
+* Copy - To clipboard
+
+NOTE: The website is Basic Auth protected for now. You won't be able to see the content unless you have the username and password.
