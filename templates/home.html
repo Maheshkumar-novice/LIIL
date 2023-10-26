@@ -69,25 +69,25 @@
     </table>
 
     <script>
-        document.querySelectorAll('button.delete').forEach((button) => {
+        document.querySelectorAll('button.delete')?.forEach((button) => {
             button.addEventListener('click', (e) => {
                 window.location = `/delete/${e.target.closest('tr').id}`
             })
         });
 
-        document.querySelectorAll('button.discord').forEach((button) => {
+        document.querySelectorAll('button.discord')?.forEach((button) => {
             button.addEventListener('click', (e) => {
                 window.location = `/discord/${e.target.closest('tr').id}`
             })
         });
 
-        document.querySelectorAll('button.copy').forEach((button) => {
+        document.querySelectorAll('button.copy')?.forEach((button) => {
             button.addEventListener('click', (e) => {
                 navigator.clipboard.writeText(e.target.closest('tr').children[0].children[0].href)
             });
         });
 
-        document.querySelector('#item-tag').addEventListener('change', (e) => {
+        document.querySelector('#item-tag')?.addEventListener('change', (e) => {
                 window.location = `/update/${e.target.closest('tr').id}?tag=${e.target.value}`
         });
     </script>
