@@ -166,3 +166,19 @@ def discord(id: int) -> Response:
         session.commit()
 
     return redirect(url_for("home"))
+
+
+@app.route("/update/<int:id>", methods=["GET"])
+def update(id: int) -> Response:
+    with Session(engine) as session:
+        link = session.get(LaterLink, id)
+
+        tag = request.args.get("tag")
+        if (not tag) or (tag not in CHANNEL_IDS):
+            return redirect(url_for("home"))
+
+        link.tag = tag
+
+        session.commit()
+
+    return redirect(url_for("home"))

@@ -41,7 +41,17 @@
         {% for link in links %}
             <tr id="{{link.id}}">
                 <td><a href="{{link.link}}" target="_blank">{{link.link}}</a></td>
-                <td>{{link.tag.upper()}}</td>
+                <td>
+                    <select name="item-tag" id="item-tag">
+                    {% for tag in tags %}
+                        {% if tag == link.tag %}
+                            <option value="{{tag}}"  class="item-tag-select" selected>{{tag}}</option>
+                        {% else %}
+                            <option value="{{tag}}"  class="item-tag-select">{{tag}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                </td>
                 {% if not link.is_posted_to_discord %}
                     <td>
                         <button type="button" class="discord" style="width: 100px; margin: 10px;">POST</button>
@@ -75,6 +85,10 @@
             button.addEventListener('click', (e) => {
                 navigator.clipboard.writeText(e.target.closest('tr').children[0].children[0].href)
             });
+        });
+
+        document.querySelector('#item-tag').addEventListener('change', (e) => {
+                window.location = `/update/${e.target.closest('tr').id}?tag=${e.target.value}`
         });
     </script>
 </body>
