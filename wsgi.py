@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask, Response, redirect, render_template, request, url_for
 from sqlalchemy import String, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
+from sqlalchemy.sql import expression
 
 load_dotenv()
 engine = create_engine("sqlite:///main.db", echo=True)
@@ -83,6 +84,14 @@ class LaterLink(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     link: Mapped[str] = mapped_column(String(500))
     tag: Mapped[str] = mapped_column(String(100))
+    is_posted_to_discord: Mapped[bool] = mapped_column(
+        default=False,
+        server_default=expression.false(),
+    )
+    is_deleted: Mapped[bool] = mapped_column(
+        default=False,
+        server_default=expression.false(),
+    )
 
 
 app = Flask(__name__)
@@ -93,7 +102,9 @@ def home() -> str:
     with Session(engine) as session:
         return render_template(
             "home.html",
-            links=session.scalars(select(LaterLink)),
+            links=session.scalars(
+                select(LaterLink).where(LaterLink.is_deleted == False),  # noqa: E712
+            ),
             tags=CHANNEL_IDS.keys(),
         )
 
@@ -113,7 +124,7 @@ def create() -> Response:
 def delete(id: int) -> Response:
     with Session(engine) as session:
         link = session.get(LaterLink, id)
-        session.delete(link)
+        link.is_deleted = True
         session.commit()
 
     return redirect(url_for("home"))
@@ -123,6 +134,9 @@ def delete(id: int) -> Response:
 def discord(id: int) -> Response:
     with Session(engine) as session:
         link = session.get(LaterLink, id)
+
+        if link.is_posted_to_discord:
+            return redirect(url_for("home"))
 
         channel_id = CHANNEL_IDS.get(link.tag)
         token = os.environ.get("DISCORD_TOKEN")
@@ -146,10 +160,9 @@ def discord(id: int) -> Response:
             )
         except Exception as e:  # noqa: BLE001
             print(e, traceback.format_exc())  # noqa: T201
+            return redirect(url_for("home"))
+
+        link.is_posted_to_discord = True
+        session.commit()
 
     return redirect(url_for("home"))
-
-
-if __name__ == "__main__":
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)

@@ -1,5 +1,4 @@
 .DEFAULT_GOAL := req
-sources = *.py
 
 .PHONY: install
 install:
@@ -17,3 +16,11 @@ lint:
 .PHONY: req
 req:
 	pip freeze > requirements.txt
+
+.PHONY: gen_migration
+gen_migration:
+	alembic revision --autogenerate -m $(msg)
+
+.PHONY: db_upgrade
+db_upgrade:
+	alembic upgrade head

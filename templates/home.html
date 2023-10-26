@@ -35,22 +35,24 @@
         <tr>
             <th>Link</th>
             <th>Tag</th>
-            <th>Delete</th>
             <th>Discord</th>
-            <th>Copy</th>
+            <th>Delete</th>
         </tr>
         {% for link in links %}
             <tr id="{{link.id}}">
-                <td><a href="{{link.link}}">{{link.link}}</a></td>
+                <td><a href="{{link.link}}" target="_blank">{{link.link}}</a></td>
                 <td>{{link.tag.upper()}}</td>
+                {% if not link.is_posted_to_discord %}
+                    <td>
+                        <button type="button" class="discord" style="width: 100px; margin: 10px;">Discord</button>
+                    </td>
+                {% else %}
+                    <td>
+                        <button type="button" class="discord" style="width: 100px; margin: 10px;" disabled>Discord</button>
+                    </td>
+                {% endif %}
                 <td>
-                    <button type="button" class="delete">Delete</button>
-                </td>
-                <td>
-                    <button type="button" class="discord">Discord</button>
-                </td>
-                <td>
-                    <button type="button" class="copy">Copy</button>
+                    <button type="button" class="delete" style="width: 100px; margin: 10px;">Delete</button>
                 </td>
             </tr>
         {% endfor %}
