@@ -1,4 +1,4 @@
-* LOW: Enable Flash
+* HIGH: Enable Flash
 * LOW: Introduce Pydantic for data validation
 * LOW: Add logging
 * LOW: Add error handlers
@@ -7,4 +7,4 @@
 * LOW: Add testing
 * LOW: Dynamic CHANNEL_IDS fetching logic (i.e. From ENV)
 * LOW: Deleted links clean up task
-* HIGH: Fix links glitch issue during WS disabled
+* LOW: Fix links glitch issue during WS disabled
