@@ -100,12 +100,13 @@ class LaterLink(Base):
 app = Flask(__name__)
 turbo = Turbo(app)
 
+app.context_processor(lambda: {"tags": CHANNEL_IDS.keys()})
+
 
 @app.route("/", methods=["GET"])
 def home() -> str:
     return render_template(
         "home.html",
-        tags=CHANNEL_IDS.keys(),
     )
 
 
@@ -117,7 +118,6 @@ def links() -> str:
             links=session.scalars(
                 select(LaterLink).where(LaterLink.is_deleted == False),  # noqa: E712
             ),
-            tags=CHANNEL_IDS.keys(),
         )
 
 
@@ -135,7 +135,7 @@ def create() -> Response:
         session.commit()
 
         if WS_ENABLED and turbo.can_stream():
-            content = render_template("link.html", link=link, tags=CHANNEL_IDS.keys())
+            content = render_template("link.html", link=link)
 
             if turbo.can_push():
                 turbo.push(
@@ -200,7 +200,7 @@ def discord(id: int) -> Response:
         session.commit()
 
         if WS_ENABLED and turbo.can_stream():
-            content = render_template("link.html", link=link, tags=CHANNEL_IDS.keys())
+            content = render_template("link.html", link=link)
             if turbo.can_push():
                 turbo.push(turbo.replace(content, id))
 
@@ -226,7 +226,7 @@ def update(id: int) -> Response:
         session.commit()
 
         if WS_ENABLED and turbo.can_stream():
-            content = render_template("link.html", link=link, tags=CHANNEL_IDS.keys())
+            content = render_template("link.html", link=link)
             if turbo.can_push():
                 turbo.push(turbo.replace(content, id))
 
