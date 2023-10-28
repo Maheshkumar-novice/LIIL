@@ -1,11 +1,10 @@
-* Enable Flash
-* Fix form data cached issue
-* Introduce Pydantic for data validation
-* Add logging
-* Add error handlers
-* Update typing (Maybe try MonkeyPatch)
-* Make edit optional in link list (i.e. Click edit icon to enable tag editing)
-* Add testing
-* Dynamic CHANNEL_IDS fetching logic (i.e. From ENV)
-* Deleted links clean up task
-* Fix WS errors in Python Anywhere
+* LOW: Enable Flash
+* LOW: Introduce Pydantic for data validation
+* LOW: Add logging
+* LOW: Add error handlers
+* LOW: Update typing (Maybe try MonkeyPatch)
+* LOW: Make edit optional in link list (i.e. Click edit icon to enable tag editing)
+* LOW: Add testing
+* LOW: Dynamic CHANNEL_IDS fetching logic (i.e. From ENV)
+* LOW: Deleted links clean up task
+* HIGH: Fix links glitch issue during WS disabled
