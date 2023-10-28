@@ -7,6 +7,7 @@ from flask import Flask, Response, redirect, render_template, request, url_for
 from sqlalchemy import String, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 from sqlalchemy.sql import expression
+from turbo_flask import Turbo
 
 load_dotenv()
 engine = create_engine("sqlite:///main.db", echo=True)
@@ -73,6 +74,8 @@ CHANNEL_IDS = {
     "dsa": os.environ.get("DSA_CID"),
 }
 
+WS_ENABLED = os.environ.get("WS_ENABLED") == "True"
+
 
 class Base(DeclarativeBase):
     pass
@@ -95,13 +98,22 @@ class LaterLink(Base):
 
 
 app = Flask(__name__)
+turbo = Turbo(app)
 
 
 @app.route("/", methods=["GET"])
 def home() -> str:
+    return render_template(
+        "home.html",
+        tags=CHANNEL_IDS.keys(),
+    )
+
+
+@app.route("/links", methods=["GET"])
+def links() -> str:
     with Session(engine) as session:
         return render_template(
-            "home.html",
+            "links.html",
             links=session.scalars(
                 select(LaterLink).where(LaterLink.is_deleted == False),  # noqa: E712
             ),
@@ -113,36 +125,58 @@ def home() -> str:
 def create() -> Response:
     link = request.form["link"]
     tag = request.form["tag"]
+
     with Session(engine) as session:
-        session.add(LaterLink(link=link, tag=tag))
+        if not (link and tag and tag in CHANNEL_IDS):
+            return redirect(url_for("home"))
+
+        link = LaterLink(link=link, tag=tag)
+        session.add(link)
         session.commit()
 
-    return redirect(url_for("home"))
+        if WS_ENABLED and turbo.can_stream():
+            content = render_template("link.html", link=link, tags=CHANNEL_IDS.keys())
+
+            if turbo.can_push():
+                turbo.push(
+                    turbo.append(content, target="links"),
+                )
+
+            return turbo.stream(
+                turbo.append(content, target="links"),
+            )
+
+        return redirect(url_for("home")), 303
 
 
-@app.route("/delete/<int:id>", methods=["GET"])
+@app.route("/delete/<int:id>", methods=["DELETE"])
 def delete(id: int) -> Response:
     with Session(engine) as session:
         link = session.get(LaterLink, id)
         link.is_deleted = True
         session.commit()
 
-    return redirect(url_for("home"))
+        if WS_ENABLED and turbo.can_stream():
+            if turbo.can_push():
+                turbo.push(turbo.remove(id))
+            return turbo.stream(turbo.remove(id))
+
+    return redirect(url_for("home")), 303
 
 
-@app.route("/discord/<int:id>", methods=["GET"])
+@app.route("/discord/<int:id>", methods=["POST"])
 def discord(id: int) -> Response:
     with Session(engine) as session:
         link = session.get(LaterLink, id)
 
         if link.is_posted_to_discord:
-            return redirect(url_for("home"))
+            return redirect(url_for("home")), 303
 
         channel_id = CHANNEL_IDS.get(link.tag)
         token = os.environ.get("DISCORD_TOKEN")
 
         if not channel_id or not token:
-            return redirect(url_for("home"))
+            return redirect(url_for("home")), 303
 
         headers = {
             "Authorization": f"Bot {token}",
@@ -160,25 +194,42 @@ def discord(id: int) -> Response:
             )
         except Exception as e:  # noqa: BLE001
             print(e, traceback.format_exc())  # noqa: T201
-            return redirect(url_for("home"))
+            return redirect(url_for("home")), 303
 
         link.is_posted_to_discord = True
         session.commit()
 
-    return redirect(url_for("home"))
+        if WS_ENABLED and turbo.can_stream():
+            content = render_template("link.html", link=link, tags=CHANNEL_IDS.keys())
+            if turbo.can_push():
+                turbo.push(turbo.replace(content, id))
+
+            return turbo.stream(turbo.replace(content, id))
+
+    return redirect(url_for("home")), 303
 
 
-@app.route("/update/<int:id>", methods=["GET"])
+@app.route("/update/<int:id>", methods=["POST"])
 def update(id: int) -> Response:
     with Session(engine) as session:
         link = session.get(LaterLink, id)
 
-        tag = request.args.get("tag")
+        tag = request.form.get("item-tag")
         if (not tag) or (tag not in CHANNEL_IDS):
-            return redirect(url_for("home"))
+            return redirect(url_for("home")), 303
 
         link.tag = tag
 
+        if link.is_posted_to_discord:
+            link.is_posted_to_discord = False
+
         session.commit()
 
-    return redirect(url_for("home"))
+        if WS_ENABLED and turbo.can_stream():
+            content = render_template("link.html", link=link, tags=CHANNEL_IDS.keys())
+            if turbo.can_push():
+                turbo.push(turbo.replace(content, id))
+
+            return turbo.stream(turbo.replace(content, id))
+
+    return redirect(url_for("home")), 303

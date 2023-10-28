@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIIL</title>
+    {{ turbo() }}
+    <style>
+        td a, td p, td button {
+            width: 100px;
+            margin: 10px;
+            text-align: center;
+        }
+    </style>
+    <meta name="turbo-cache-control" content="no-preview">
 </head>
 <body>
-    <form action="/" method="POST">
+    <form action="/" method="POST" data-turbo-temporary>
         <fieldset>
             <legend>LIIL</legend>
             <div>
@@ -31,64 +40,16 @@
         </fieldset>
     </form>
 
-    <table>
-        <tr>
-            <th>Link</th>
-            <th>Tag</th>
-            <th>Discord</th>
-            <th>Delete</th>
-        </tr>
-        {% for link in links %}
-            <tr id="{{link.id}}">
-                <td><a href="{{link.link}}" target="_blank">{{link.link}}</a></td>
-                <td>
-                    <select name="item-tag" id="item-tag">
-                    {% for tag in tags %}
-                        {% if tag == link.tag %}
-                            <option value="{{tag}}"  class="item-tag-select" selected>{{tag}}</option>
-                        {% else %}
-                            <option value="{{tag}}"  class="item-tag-select">{{tag}}</option>
-                        {% endif %}
-                    {% endfor %}
-                    </select>
-                </td>
-                {% if not link.is_posted_to_discord %}
-                    <td>
-                        <button type="button" class="discord" style="width: 100px; margin: 10px;">POST</button>
-                    </td>
-                {% else %}
-                    <td>
-                        <button type="button"  style="width: 100px; margin: 10px;" disabled>POSTED</button>
-                    </td>
-                {% endif %}
-                <td>
-                    <button type="button" class="delete" style="width: 100px; margin: 10px;">Delete</button>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    <turbo-frame id="links-frame" src="/links"></turbo-frame>
 
     <script>
-        document.querySelectorAll('button.delete')?.forEach((button) => {
-            button.addEventListener('click', (e) => {
-                window.location = `/delete/${e.target.closest('tr').id}`
-            })
+        document.addEventListener("change", (e) => {
+            if (e.target.id == "item-tag")
+                e.target.closest("form").requestSubmit();
         });
 
-        document.querySelectorAll('button.discord')?.forEach((button) => {
-            button.addEventListener('click', (e) => {
-                window.location = `/discord/${e.target.closest('tr').id}`
-            })
-        });
-
-        document.querySelectorAll('button.copy')?.forEach((button) => {
-            button.addEventListener('click', (e) => {
-                navigator.clipboard.writeText(e.target.closest('tr').children[0].children[0].href)
-            });
-        });
-
-        document.querySelector('#item-tag')?.addEventListener('change', (e) => {
-                window.location = `/update/${e.target.closest('tr').id}?tag=${e.target.value}`
+        document.addEventListener("turbo:submit-start", ({ target }) => {
+            target.reset();
         });
     </script>
 </body>

@@ -1,0 +1,13 @@
+<turbo-frame id="links-frame">
+<table id="links">
+    <tr>
+        <th>Link</th>
+        <th>Tag</th>
+        <th>Discord</th>
+        <th></th>
+    </tr>
+    {% for link in links %}
+        {% include "link.html" %}
+    {% endfor %}
+</table>
+</turbo-frame>

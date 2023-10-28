@@ -1,0 +1,32 @@
+<tr id="{{link.id}}">
+    <td><a href="{{link.link}}" target="_blank">{{link.link}}</a></td>
+    <td>
+        <form action="/update/{{link.id}}" method="POST">
+            <select name="item-tag" id="item-tag">
+            {% for tag in tags %}
+                {% if tag == link.tag %}
+                    <option value="{{tag}}"  class="item-tag-select" selected>{{tag}}</option>
+                {% else %}
+                    <option value="{{tag}}"  class="item-tag-select">{{tag}}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </form>
+    </td>
+    {% if not link.is_posted_to_discord %}
+        <td>
+            <a href="/discord/{{link.id}}" class="discord" data-turbo-method="post">
+                <button type="button">POST</button>
+            </a>
+        </td>
+    {% else %}
+        <td>
+            <p>POSTED</p>
+        </td>
+    {% endif %}
+    <td>
+        <a href="/delete/{{link.id}}" class="delete" style="width: 100px; margin: 10px;" data-turbo-method="delete">
+            <button type="button">Delete</button>
+        </a>
+    </td>
+</tr>
