@@ -6,3 +6,6 @@
 * Update typing (Maybe try MonkeyPatch)
 * Make edit optional in link list (i.e. Click edit icon to enable tag editing)
 * Add testing
+* Dynamic CHANNEL_IDS fetching logic (i.e. From ENV)
+* Deleted links clean up task
+* Fix WS errors in Python Anywhere
