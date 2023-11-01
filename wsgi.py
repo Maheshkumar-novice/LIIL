@@ -100,7 +100,7 @@ class LaterLink(Base):
 app = Flask(__name__)
 turbo = Turbo(app)
 
-app.context_processor(lambda: {"tags": CHANNEL_IDS.keys()})
+app.context_processor(lambda: {"tags": CHANNEL_IDS.keys(), "WS_ENABLED": WS_ENABLED})
 
 
 @app.route("/", methods=["GET"])
