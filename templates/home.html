@@ -44,6 +44,9 @@
 
     <script>
         document.addEventListener("change", (e) => {
+            alert("change detected...")
+            alert(e.target)
+            alert(e.target.id)
             if (e.target.id == "item-tag")
                 e.target.closest("form").requestSubmit();
         });
