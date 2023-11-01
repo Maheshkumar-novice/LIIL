@@ -45,7 +45,7 @@
     <script>
         document.addEventListener("change", (e) => {
             if (e.target.id == "item-tag")
-                e.target.closest("form").requestSubmit();
+                e.target.closest("form").submit();
         });
 
         document.addEventListener("turbo:submit-start", ({ target }) => {
