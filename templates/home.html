@@ -46,7 +46,6 @@
         document.addEventListener("change", (e) => {
             e.stopPropagation()
             if (e.target.id == "item-tag")
-                alert('Submitting..')
                 e.target.closest("form").submit();
         });
 
