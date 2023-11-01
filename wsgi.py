@@ -74,8 +74,6 @@ CHANNEL_IDS = {
     "dsa": os.environ.get("DSA_CID"),
 }
 
-WS_ENABLED = os.environ.get("WS_ENABLED") == "True"
-
 
 class Base(DeclarativeBase):
     pass
@@ -100,7 +98,7 @@ class LaterLink(Base):
 app = Flask(__name__)
 turbo = Turbo(app)
 
-app.context_processor(lambda: {"tags": CHANNEL_IDS.keys(), "WS_ENABLED": WS_ENABLED})
+app.context_processor(lambda: {"tags": CHANNEL_IDS.keys()})
 
 
 @app.route("/", methods=["GET"])
@@ -134,7 +132,7 @@ def create() -> Response:
         session.add(link)
         session.commit()
 
-        if WS_ENABLED and turbo.can_stream():
+        if turbo.can_stream():
             content = render_template("link.html", link=link)
 
             if turbo.can_push():
@@ -156,7 +154,7 @@ def delete(id: int) -> Response:
         link.is_deleted = True
         session.commit()
 
-        if WS_ENABLED and turbo.can_stream():
+        if turbo.can_stream():
             if turbo.can_push():
                 turbo.push(turbo.remove(id))
             return turbo.stream(turbo.remove(id))
@@ -199,7 +197,7 @@ def discord(id: int) -> Response:
         link.is_posted_to_discord = True
         session.commit()
 
-        if WS_ENABLED and turbo.can_stream():
+        if turbo.can_stream():
             content = render_template("link.html", link=link)
             if turbo.can_push():
                 turbo.push(turbo.replace(content, id))
@@ -225,7 +223,7 @@ def update(id: int) -> Response:
 
         session.commit()
 
-        if WS_ENABLED and turbo.can_stream():
+        if turbo.can_stream():
             content = render_template("link.html", link=link)
             if turbo.can_push():
                 turbo.push(turbo.replace(content, id))

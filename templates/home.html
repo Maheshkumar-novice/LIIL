@@ -40,16 +40,12 @@
         </fieldset>
     </form>
 
-    <turbo-frame id="links-frame" src="/links" {% if not WS_ENABLED %}target="_top"{% endif %}></turbo-frame>
+    <turbo-frame id="links-frame" src="/links"></turbo-frame>
 
     <script>
         document.addEventListener("change", (e) => {
             if (e.target.id == "item-tag") {
-                {% if WS_ENABLED %}
                     e.target.closest("form").requestSubmit();
-                {% else %}
-                    e.target.closest("form").submit();
-                {% endif %}
             }
         });
 
