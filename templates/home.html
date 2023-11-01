@@ -44,12 +44,10 @@
 
     <script>
         document.addEventListener("change", (e) => {
-            alert("change detected...")
-            alert(e.target)
-            alert(e.target.id)
-            alert(e.target.value)
+            e.stopPropagation()
             if (e.target.id == "item-tag")
-                e.target.closest("form").requestSubmit();
+                alert('Submitting..')
+                e.target.closest("form").submit();
         });
 
         document.addEventListener("turbo:submit-start", ({ target }) => {
