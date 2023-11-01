@@ -7,4 +7,3 @@
 * LOW: Add testing
 * LOW: Dynamic CHANNEL_IDS fetching logic (i.e. From ENV)
 * LOW: Deleted links clean up task
-* LOW: Fix links glitch issue during WS disabled
