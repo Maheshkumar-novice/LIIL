@@ -1,8 +1,9 @@
 # LIIL
 
-Look Into It Later - A link storing utility to refer the links I'm interested to read
-or store later.
+Look Into It Later - A utility to store,
 
+    * Links
+    * Birthdays
 
 I use,
 
@@ -14,11 +15,5 @@ Project structure inspriations,
 * https://github.com/jerry-git/pytest-split?ref=blog.jerrycodes.com
 * https://github.com/samuelcolvin/aicli
 
-![example](example.png)
-
-You can do 3 actions on each of the stored links,
-* Delete
-* Discord - It'll send to the discord channel based on the selected tag
-* Copy - To clipboard
 
 NOTE: The website is Basic Auth protected for now. You won't be able to see the content unless you have the username and password.

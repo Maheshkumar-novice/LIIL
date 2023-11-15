@@ -1,7 +1,7 @@
 <tr id="{{link.id}}">
     <td><a href="{{link.link}}" target="_blank">{{link.link}}</a></td>
     <td>
-        <form action="/update/{{link.id}}" method="POST">
+        <form action="{{url_for('liil.update', id=link.id)}}" method="POST">
             <select name="item-tag" id="item-tag">
             {% for tag in tags %}
                 {% if tag == link.tag %}
@@ -15,7 +15,7 @@
     </td>
     {% if not link.is_posted_to_discord %}
         <td>
-            <a href="/discord/{{link.id}}" class="discord" data-turbo-method="post">
+            <a href="{{url_for('liil.discord', id=link.id)}}" class="discord" data-turbo-method="post">
                 <button type="button">POST</button>
             </a>
         </td>
@@ -25,7 +25,7 @@
         </td>
     {% endif %}
     <td>
-        <a href="/delete/{{link.id}}" class="delete" style="width: 100px; margin: 10px;" data-turbo-method="delete">
+        <a href="{{url_for('liil.delete', id=link.id)}}" class="delete" style="width: 100px; margin: 10px;" data-turbo-method="delete">
             <button type="button">Delete</button>
         </a>
     </td>

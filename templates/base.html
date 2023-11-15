@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LIIL</title>
+        {{ turbo() }}
+        <style>
+            td a, td p, td button {
+                width: 100px;
+                margin: 10px;
+                text-align: center;
+            }
+
+            .nav-links {
+                margin-bottom: 20px;
+            }
+
+            .nav-links > * {
+                margin-right: 10px;
+            }
+
+            table {
+                margin-top: 20px;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            a {
+                font-size: 1.15rem;
+            }
+        </style>
+        <meta name="turbo-cache-control" content="no-preview">
+    </head>
+    <body>
+        {% block content %} {% endblock content %}
+
+        <script>
+            document.addEventListener("change", (e) => {
+                if (e.target.id == "item-tag") {
+                        e.target.closest("form").requestSubmit();
+                }
+            });
+
+            document.addEventListener("turbo:submit-start", ({ target }) => {
+                target.reset();
+            });
+        </script>
+    </body>
+</html>

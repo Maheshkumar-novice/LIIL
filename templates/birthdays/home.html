@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="nav-links">
+        <a href="{{url_for('home')}}">Home</a>
+        <a href="{{url_for('liil.home')}}">LIIL</a>
+    </div>
+
+    <form action="{{url_for('birthdays.create')}}" method="POST" data-turbo-temporary>
+        <fieldset>
+            <legend>Birthdays</legend>
+            <div>
+                <label for="name">Name:</label>
+                <br>
+                <input type="text" name="name" id="name" required style="width: 50%; height: 50px;">
+            </div>
+            <div>
+                <label for="date">Date:</label>
+                <br>
+                <input type="date" name="date" id="date" required style="width: 50%; height: 50px;">
+            </div>
+            <br>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </fieldset>
+    </form>
+
+    <turbo-frame id="birthdays-frame" src="{{url_for('birthdays.birthdays')}}"></turbo-frame>
+{% endblock content %}

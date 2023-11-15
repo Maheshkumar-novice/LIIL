@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="nav-links">
+        <a href="{{url_for('home')}}">Home</a>
+        <a href="{{url_for('birthdays.home')}}">Birthdays</a>
+    </div>
+
+    <br>
+
+    <form action="{{url_for('liil.create')}}" method="POST" data-turbo-temporary>
+        <fieldset>
+            <legend>LIIL</legend>
+            <div>
+                <label for="link">Link:</label>
+                <br>
+                <input type="text" name="link" id="link" required style="width: 50%; height: 50px;">
+            </div>
+            <br>
+            <div>
+                <label for="tag">Channel Tag:</label>
+                <br>
+                <select name="tag" id="tag" required>
+                    {% for tag in tags %}
+                        <option value="{{tag}}">{{tag}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </fieldset>
+    </form>
+
+    <turbo-frame id="links-frame" src="{{url_for('liil.links')}}"></turbo-frame>
+{% endblock content %}

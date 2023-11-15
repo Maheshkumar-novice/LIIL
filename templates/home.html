@@ -1,57 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIIL</title>
-    {{ turbo() }}
-    <style>
-        td a, td p, td button {
-            width: 100px;
-            margin: 10px;
-            text-align: center;
-        }
-    </style>
-    <meta name="turbo-cache-control" content="no-preview">
-</head>
-<body>
-    <form action="/" method="POST" data-turbo-temporary>
-        <fieldset>
-            <legend>LIIL</legend>
-            <div>
-                <label for="link">Link:</label>
-                <br>
-                <input type="text" name="link" id="link" required style="width: 50%; height: 50px;">
-            </div>
-            <br>
-            <div>
-                <label for="tag">Channel Tag:</label>
-                <br>
-                <select name="tag" id="tag" required>
-                    {% for tag in tags %}
-                        <option value="{{tag}}">{{tag}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <br>
-            <div>
-                <button type="submit">Submit</button>
-            </div>
-        </fieldset>
-    </form>
+{% extends "base.html" %}
 
-    <turbo-frame id="links-frame" src="/links"></turbo-frame>
+{% block content %}
+    <h1 class="hero-content">LIIL!</h1>
 
-    <script>
-        document.addEventListener("change", (e) => {
-            if (e.target.id == "item-tag") {
-                    e.target.closest("form").requestSubmit();
-            }
-        });
-
-        document.addEventListener("turbo:submit-start", ({ target }) => {
-            target.reset();
-        });
-    </script>
-</body>
-</html>
+    <p class="hero-content"><a href="{{url_for('liil.home')}}">LIIL</a></p>
+    <p class="hero-content"><a href="{{url_for('birthdays.home')}}">Birthdays</a></p>
+{% endblock content %}
