@@ -6,6 +6,10 @@
         <a href="{{url_for('liil.home')}}">LIIL</a>
     </div>
 
+    <h3>Today's Birthdays:</h3>
+    <turbo-frame id="current-birthdays-frame" src="{{url_for('birthdays.current_birthdays')}}"></turbo-frame>
+    <br/>
+
     <form action="{{url_for('birthdays.create')}}" method="POST" data-turbo-temporary>
         <fieldset>
             <legend>Birthdays</legend>

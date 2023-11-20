@@ -1,0 +1,7 @@
+<turbo-frame id="current-birthdays-frame">
+    <ul>
+        {% for birthday in birthdays %}
+            {% include "birthdays/current-birthday.html" %}
+        {% endfor %}
+    </ul>
+</turbo-frame>

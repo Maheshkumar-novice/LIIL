@@ -7,7 +7,7 @@ install:
 
 .PHONY: format
 format:
-	ruff format . --target-version py311
+	ruff format . --target-version py312
 
 .PHONY: lint
 lint:

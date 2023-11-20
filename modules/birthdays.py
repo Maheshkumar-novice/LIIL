@@ -49,7 +49,31 @@ def birthdays() -> str:
         return render_template(
             "birthdays/birthdays.html",
             birthdays=session.scalars(
-                select(Birthday).where(Birthday.is_deleted == False),  # noqa: E712
+                select(Birthday)
+                .where(Birthday.is_deleted == False)  # noqa: E712
+                .order_by(Birthday.date.desc()),
+            ),
+        )
+
+
+@birthdays_blueprint.route("/current-birthdays", methods=["GET"])
+def current_birthdays() -> str:
+    current_date = datetime.datetime.now().replace(  # noqa: DTZ005
+        year=2000,
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0,
+    )
+
+    with Session(engine) as session:
+        return render_template(
+            "birthdays/current-birthdays.html",
+            birthdays=session.scalars(
+                select(Birthday).where(
+                    Birthday.is_deleted == False,  # noqa: E712
+                    Birthday.date == current_date,
+                ),
             ),
         )
 
@@ -58,7 +82,7 @@ def birthdays() -> str:
 def create() -> Response:
     name = request.form["name"]
     date = request.form["date"]
-    date = datetime.datetime.strptime(date, "%Y-%m-%d").astimezone()
+    date = datetime.datetime.strptime(date, "%Y-%m-%d").astimezone().replace(year=2000)
 
     with Session(engine) as session:
         birthday = Birthday(name=name, date=date)
